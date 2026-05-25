@@ -1,46 +1,40 @@
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 
+const app = express();
 const PORT = process.env.PORT || 3000;
-const ROOT_DIR = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
+
+const ROOT_DIR = path.join(__dirname, '..');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
-const DB_PATH = path.join(__dirname, 'db.json');
+const DB_FILE = path.join(__dirname, 'db.json');
+const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-function loadDB() {
+if (!fs.existsSync(DB_FILE)) {
+  fs.writeFileSync(DB_FILE, JSON.stringify({ tracks: [] }, null, 2), 'utf-8');
+}
+
+function readDb() {
   try {
-    if (!fs.existsSync(DB_PATH)) {
-      const initial = { tracks: [] };
-      fs.writeFileSync(DB_PATH, JSON.stringify(initial, null, 2), 'utf8');
-      return initial;
+    const raw = fs.readFileSync(DB_FILE, 'utf-8');
+    const data = JSON.parse(raw);
+    if (!data.tracks || !Array.isArray(data.tracks)) {
+      return { tracks: [] };
     }
-    const raw = fs.readFileSync(DB_PATH, 'utf8');
-    const parsed = JSON.parse(raw || '{"tracks":[]}');
-    if (!Array.isArray(parsed.tracks)) parsed.tracks = [];
-    return parsed;
+    return data;
   } catch (err) {
-    console.error('Failed to load DB, recreating:', err.message);
-    const initial = { tracks: [] };
-    fs.writeFileSync(DB_PATH, JSON.stringify(initial, null, 2), 'utf8');
-    return initial;
+    return { tracks: [] };
   }
 }
 
-function saveDB(db) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8');
-}
-
-function sanitizeName(name) {
-  return String(name)
-    .replace(/[^a-zA-Z0-9_.\-]/g, '_')
-    .slice(0, 80);
+function writeDb(data) {
+  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
 const storage = multer.diskStorage({
@@ -48,23 +42,27 @@ const storage = multer.diskStorage({
     cb(null, UPLOADS_DIR);
   },
   filename: function (req, file, cb) {
-    const ts = Date.now();
-    const rand = Math.random().toString(36).slice(2, 8);
-    const ext = path.extname(file.originalname).toLowerCase();
-    const base = sanitizeName(path.basename(file.originalname, ext)) || 'file';
-    cb(null, `${ts}-${rand}-${base}${ext}`);
+    const safeBase = path.basename(file.originalname, path.extname(file.originalname))
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+      .slice(0, 40);
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, `${unique}-${safeBase}${path.extname(file.originalname).toLowerCase()}`);
   }
 });
 
-const allowedAudio = new Set(['.mp3', '.wav', '.ogg', '.m4a', '.flac']);
-const allowedImage = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp']);
+const ALLOWED_AUDIO = ['.mp3', '.wav', '.ogg', '.m4a'];
+const ALLOWED_IMAGE = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
-function fileFilter(req, file, cb) {
+const fileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
-  if (file.fieldname === 'audio' && allowedAudio.has(ext)) return cb(null, true);
-  if (file.fieldname === 'cover' && allowedImage.has(ext)) return cb(null, true);
-  cb(new Error(`Unsupported file type for field ${file.fieldname}: ${ext}`));
-}
+  if (file.fieldname === 'track' && ALLOWED_AUDIO.includes(ext)) {
+    cb(null, true);
+  } else if (file.fieldname === 'cover' && ALLOWED_IMAGE.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error(`Invalid file type for field "${file.fieldname}": ${ext}`));
+  }
+};
 
 const upload = multer({
   storage,
@@ -72,104 +70,97 @@ const upload = multer({
   limits: { fileSize: 100 * 1024 * 1024 }
 });
 
-const app = express();
 app.use(cors());
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json());
 app.use('/uploads', express.static(UPLOADS_DIR, {
-  maxAge: '1d',
   setHeaders: (res) => {
-    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
   }
 }));
-
 app.use(express.static(PUBLIC_DIR));
 
-app.get('/api/health', (req, res) => {
-  res.json({ ok: true, time: new Date().toISOString() });
+app.post('/api/upload', (req, res) => {
+  const uploader = upload.fields([
+    { name: 'track', maxCount: 1 },
+    { name: 'cover', maxCount: 1 }
+  ]);
+
+  uploader(req, res, function (err) {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    if (!req.files || !req.files.track || req.files.track.length === 0) {
+      return res.status(400).json({ error: 'Audio track file is required' });
+    }
+
+    const title = (req.body.title || '').trim() || 'Untitled';
+    const author = (req.body.author || '').trim() || 'Unknown Artist';
+    const album = (req.body.album || '').trim() || 'Single';
+
+    const trackFile = req.files.track[0];
+    const coverFile = req.files.cover && req.files.cover[0];
+
+    const track = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+      title,
+      author,
+      album,
+      url: '/uploads/' + trackFile.filename,
+      cover: coverFile ? '/uploads/' + coverFile.filename : null,
+      createdAt: new Date().toISOString()
+    };
+
+    const db = readDb();
+    db.tracks.unshift(track);
+    writeDb(db);
+
+    res.status(201).json(track);
+  });
 });
 
 app.get('/api/tracks', (req, res) => {
-  const db = loadDB();
-  const tracks = [...db.tracks].sort((a, b) => b.createdAt - a.createdAt);
-  res.json({ tracks });
-});
-
-app.get('/api/tracks/:id', (req, res) => {
-  const db = loadDB();
-  const track = db.tracks.find(t => t.id === req.params.id);
-  if (!track) return res.status(404).json({ error: 'Track not found' });
-  res.json({ track });
-});
-
-app.post('/api/upload', upload.fields([
-  { name: 'audio', maxCount: 1 },
-  { name: 'cover', maxCount: 1 }
-]), (req, res) => {
-  try {
-    const { title, artist, album } = req.body;
-    if (!req.files || !req.files.audio || !req.files.audio[0]) {
-      return res.status(400).json({ error: 'Audio file is required' });
-    }
-    if (!title || !title.trim()) {
-      return res.status(400).json({ error: 'Title is required' });
-    }
-
-    const audioFile = req.files.audio[0];
-    const coverFile = req.files.cover && req.files.cover[0];
-
-    const db = loadDB();
-    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    const track = {
-      id,
-      title: title.trim().slice(0, 200),
-      artist: (artist || 'Unknown Artist').trim().slice(0, 200),
-      album: (album || '').trim().slice(0, 200),
-      audioUrl: `/uploads/${audioFile.filename}`,
-      coverUrl: coverFile ? `/uploads/${coverFile.filename}` : null,
-      audioMime: audioFile.mimetype,
-      coverMime: coverFile ? coverFile.mimetype : null,
-      size: audioFile.size,
-      createdAt: Date.now()
-    };
-    db.tracks.push(track);
-    saveDB(db);
-    res.status(201).json({ track });
-  } catch (err) {
-    console.error('Upload error:', err);
-    res.status(500).json({ error: err.message || 'Upload failed' });
-  }
+  const db = readDb();
+  res.json(db.tracks);
 });
 
 app.delete('/api/tracks/:id', (req, res) => {
-  const db = loadDB();
+  const db = readDb();
   const idx = db.tracks.findIndex(t => t.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ error: 'Track not found' });
-  const [removed] = db.tracks.splice(idx, 1);
-  saveDB(db);
-
-  for (const url of [removed.audioUrl, removed.coverUrl]) {
-    if (!url) continue;
-    const filePath = path.join(UPLOADS_DIR, path.basename(url));
-    fs.unlink(filePath, () => {});
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Track not found' });
   }
-  res.json({ ok: true, removed });
+  const [removed] = db.tracks.splice(idx, 1);
+  writeDb(db);
+
+  [removed.url, removed.cover].forEach(rel => {
+    if (rel && rel.startsWith('/uploads/')) {
+      const filePath = path.join(UPLOADS_DIR, path.basename(rel));
+      fs.unlink(filePath, () => {});
+    }
+  });
+
+  res.json({ ok: true });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+    return next();
+  }
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
 app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    return res.status(400).json({ error: err.message });
-  }
-  if (err) {
-    console.error(err);
-    return res.status(500).json({ error: err.message || 'Server error' });
-  }
-  next();
+  console.error('Server error:', err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Spotifree server running on http://localhost:${PORT}`);
-  console.log(`Uploads directory: ${UPLOADS_DIR}`);
-  console.log(`DB file: ${DB_PATH}`);
+const server = app.listen(PORT, () => {
+  console.log(`Spotifree server running at http://localhost:${PORT}`);
 });
+
+module.exports = { app, server };

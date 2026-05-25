@@ -1,28 +1,26 @@
 {
   "name": "spotifree",
   "version": "1.0.0",
-  "description": "Spotifree - free Spotify-style music player with custom uploads and GIF covers",
+  "description": "Spotifree - a Spotify-like music player with custom uploads and GIF support",
   "main": "main.js",
   "scripts": {
     "start": "node server/index.js",
     "electron": "electron main.js",
-    "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && npm run electron\"",
+    "dev": "concurrently \"npm run start\" \"npm run electron\"",
     "build": "electron-builder",
-    "build:win": "electron-builder --win --x64",
-    "pack": "electron-builder --dir"
+    "build:win": "electron-builder --win --x64"
   },
   "author": "kknoriakidev",
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^4.22.2",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "electron": "^30.0.0",
-    "electron-builder": "^24.13.3",
-    "wait-on": "^7.2.0"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "concurrently": "^8.2.2"
   },
   "build": {
     "appId": "com.kknoriakidev.spotifree",
@@ -42,18 +40,14 @@
       {
         "from": "server/uploads",
         "to": "uploads",
-        "filter": [
-          "**/*"
-        ]
+        "filter": [".gitkeep"]
       }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ],
       "artifactName": "Spotifree-Setup-${version}.${ext}"
@@ -64,18 +58,6 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Spotifree"
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ],
-      "category": "AudioVideo"
-    },
-    "mac": {
-      "target": [
-        "dmg"
-      ],
-      "category": "public.app-category.music"
     }
   }
 }

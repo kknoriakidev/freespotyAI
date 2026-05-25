@@ -1,35 +1,49 @@
 const { app, BrowserWindow, shell, Menu } = require('electron');
 const path = require('path');
+const { spawn } = require('child_process');
 const http = require('http');
-
-const SERVER_PORT = process.env.PORT || 3000;
-const SERVER_URL = `http://localhost:${SERVER_PORT}`;
-const isDev = !app.isPackaged;
 
 let mainWindow = null;
 let serverProcess = null;
+const SERVER_PORT = process.env.PORT || 3000;
+const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 
 function startServer() {
   return new Promise((resolve, reject) => {
-    try {
-      process.env.PORT = String(SERVER_PORT);
-      const serverPath = path.join(__dirname, 'server', 'index.js');
-      require(serverPath);
-      waitForServer(SERVER_URL, 15000).then(resolve).catch(reject);
-    } catch (err) {
-      reject(err);
-    }
+    const serverEntry = path.join(__dirname, 'server', 'index.js');
+    serverProcess = spawn(process.execPath, [serverEntry], {
+      env: { ...process.env, ELECTRON_RUN_AS_NODE: '1', PORT: String(SERVER_PORT) },
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+
+    serverProcess.stdout.on('data', (chunk) => {
+      const out = chunk.toString();
+      process.stdout.write(`[server] ${out}`);
+    });
+    serverProcess.stderr.on('data', (chunk) => {
+      process.stderr.write(`[server-err] ${chunk}`);
+    });
+    serverProcess.on('exit', (code) => {
+      console.log(`Server process exited with code ${code}`);
+      serverProcess = null;
+    });
+
+    waitForServer(SERVER_URL, 30, 500).then(resolve).catch(reject);
   });
 }
 
-function waitForServer(url, timeoutMs) {
-  const start = Date.now();
+function waitForServer(url, attempts, delay) {
   return new Promise((resolve, reject) => {
-    const tryOnce = () => {
+    let tries = 0;
+    const check = () => {
+      tries++;
       const req = http.get(url + '/api/health', (res) => {
         res.resume();
-        if (res.statusCode === 200) return resolve();
-        retry();
+        if (res.statusCode === 200) {
+          resolve();
+        } else {
+          retry();
+        }
       });
       req.on('error', retry);
       req.setTimeout(1500, () => {
@@ -38,46 +52,38 @@ function waitForServer(url, timeoutMs) {
       });
     };
     const retry = () => {
-      if (Date.now() - start > timeoutMs) {
+      if (tries >= attempts) {
         return reject(new Error('Server did not start in time'));
       }
-      setTimeout(tryOnce, 250);
+      setTimeout(check, delay);
     };
-    tryOnce();
+    check();
   });
 }
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    width: 1400,
+    height: 900,
     minWidth: 900,
     minHeight: 600,
-    backgroundColor: '#000000',
+    backgroundColor: '#121212',
     title: 'Spotifree',
-    icon: path.join(__dirname, 'public', 'favicon.ico'),
     autoHideMenuBar: true,
     webPreferences: {
-      contextIsolation: true,
       nodeIntegration: false,
+      contextIsolation: true,
       sandbox: true
     }
   });
 
   Menu.setApplicationMenu(null);
-
   mainWindow.loadURL(SERVER_URL);
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
   });
-
-  if (isDev) {
-    mainWindow.webContents.on('did-fail-load', () => {
-      setTimeout(() => mainWindow.loadURL(SERVER_URL), 800);
-    });
-  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -88,7 +94,7 @@ app.whenReady().then(async () => {
   try {
     await startServer();
   } catch (err) {
-    console.error('Failed to start backend:', err);
+    console.error('Failed to start backend server:', err);
   }
   createWindow();
 
@@ -98,13 +104,14 @@ app.whenReady().then(async () => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+  if (serverProcess) {
+    try { serverProcess.kill(); } catch (e) {}
   }
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('before-quit', () => {
   if (serverProcess) {
-    try { serverProcess.kill(); } catch (_) {}
+    try { serverProcess.kill(); } catch (e) {}
   }
 });

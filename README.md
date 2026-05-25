@@ -1,66 +1,67 @@
 # Spotifree
 
-Свой музыкальный плеер в стиле Spotify: тёмная тема, боковая панель, нижний плеер, поддержка
-GIF-обложек, форма для загрузки собственных треков. Веб-версия + сборка в `.exe` через Electron.
+Музыкальный плеер в стиле Spotify с поддержкой пользовательских треков и GIF-анимаций. Состоит из веб-версии (Node.js + Express + ванильный JS) и десктопной (Electron, собирается в `.exe`).
 
-## Стек
-- **Backend:** Node.js + Express + Multer (загрузка файлов, JSON-БД)
-- **Frontend:** чистый HTML/CSS/JS (без сборщиков), кастомные стили под Spotify
-- **Desktop:** Electron + electron-builder (NSIS installer для Windows)
+## Структура проекта
 
-## Структура
 ```
-spotifree/
+.
+├── main.js                # Electron-обёртка: запускает сервер и открывает окно
+├── package.json           # Скрипты, зависимости и конфиг electron-builder
 ├── server/
-│   ├── index.js         # Express-сервер: API + статика
-│   ├── db.json          # Хранилище метаданных треков
-│   └── uploads/         # Загруженные аудио и обложки
-├── public/
-│   ├── index.html       # Главная страница плеера
-│   ├── css/style.css    # Тёмная тема в стиле Spotify
-│   └── js/app.js        # Логика плеера и формы загрузки
-├── main.js              # Electron entrypoint
-└── package.json
+│   ├── index.js           # Express API: загрузка треков, отдача файлов и списка
+│   ├── db.json            # Локальная БД треков (создаётся автоматически)
+│   └── uploads/           # Загруженные аудио и обложки
+└── public/
+    ├── index.html         # Каркас интерфейса (sidebar + main + player)
+    ├── css/style.css      # Тёмная Spotify-подобная тема
+    └── js/app.js          # Логика плеера и формы загрузки
 ```
 
-## Запуск (веб)
+## Запуск веб-версии
+
 ```bash
 npm install
 npm start
-# http://localhost:3000
 ```
 
-## Запуск (десктоп)
+Открой `http://localhost:3000`.
+
+## Запуск Electron
+
 ```bash
 npm install
-npm run dev          # сервер + Electron одновременно
+npm run electron
 ```
-или вручную:
-```bash
-npm start            # в одном терминале
-npm run electron     # в другом
-```
+
+Electron сам поднимет бекенд (`server/index.js`) и откроет окно с интерфейсом.
 
 ## Сборка `.exe`
+
 ```bash
+npm install
 npm run build:win
 ```
-Готовый установщик будет в `dist/Spotifree-Setup-*.exe`.
 
-## API
-| Метод  | Путь                | Описание                          |
-|--------|---------------------|-----------------------------------|
-| GET    | `/api/health`       | Проверка сервера                  |
-| GET    | `/api/tracks`       | Список треков (по дате)           |
-| GET    | `/api/tracks/:id`   | Один трек                         |
-| POST   | `/api/upload`       | Загрузка трека (multipart: `audio`, `cover`, `title`, `artist`, `album`) |
-| DELETE | `/api/tracks/:id`   | Удалить трек и файлы              |
+Готовый установщик появится в `dist/` под именем `Spotifree-Setup-1.0.0.exe`. Передай файл друзьям — установка одним кликом.
 
-## Форматы
-- **Аудио:** `.mp3`, `.wav`, `.ogg`, `.m4a`, `.flac` (до 100 МБ)
-- **Обложки:** `.jpg`, `.jpeg`, `.png`, `.gif`, `.webp` — GIF проигрывается как анимация
+## Эндпоинты бекенда
+
+| Метод  | URL                | Описание                                                              |
+|--------|--------------------|-----------------------------------------------------------------------|
+| GET    | `/api/tracks`      | Список треков                                                         |
+| POST   | `/api/upload`      | `multipart/form-data`: `title`, `author`, `album`, `track`, `cover`   |
+| DELETE | `/api/tracks/:id`  | Удалить трек и его файлы                                              |
+| GET    | `/uploads/<file>`  | Статика для аудио и обложек                                           |
+| GET    | `/api/health`      | Health-чек                                                            |
+
+## Поддерживаемые форматы
+
+- **Аудио:** `.mp3`, `.wav`, `.ogg`, `.m4a`
+- **Обложки:** `.jpg`, `.jpeg`, `.png`, `.gif` (анимированные), `.webp`
 
 ## Горячие клавиши
-- `Space` — play/pause
-- `Shift + ←` / `Shift + →` — предыдущий / следующий трек
-- `Esc` — закрыть модалку
+
+- `Space` — play / pause
+- `←` / `→` — предыдущий / следующий трек
+- `Esc` — закрыть модальное окно загрузки

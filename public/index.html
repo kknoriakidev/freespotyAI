@@ -4,201 +4,194 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spotifree</title>
-  <link rel="stylesheet" href="/css/style.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%231db954'/%3E%3Cpath d='M17 16.5c-.2.3-.5.4-.8.3-2.3-1.4-5.2-1.7-8.6-.9-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 3.7-.8 6.9-.5 9.5 1.1.3.1.4.5.2.8zm1.2-2.6c-.3.4-.7.5-1.1.3-2.7-1.7-6.8-2.2-10-1.2-.4.1-.9-.1-1-.6-.1-.4.1-.9.6-1 3.6-1.1 8.1-.5 11.2 1.4.4.2.5.7.3 1.1zm.1-2.7c-3.2-1.9-8.5-2.1-11.5-1.1-.5.2-1.1-.1-1.3-.6-.2-.5.1-1.1.6-1.3 3.5-1.1 9.3-.9 13 1.3.5.3.6.9.4 1.4-.3.4-1 .6-1.4.3z' fill='%23000'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app">
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="sidebar__logo">
-        <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
-          <circle cx="12" cy="12" r="12" fill="#1db954"/>
-          <path d="M17 16.5c-.2.3-.5.4-.8.3-2.3-1.4-5.2-1.7-8.6-.9-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 3.7-.8 6.9-.5 9.5 1.1.3.1.4.5.2.8zm1.2-2.6c-.3.4-.7.5-1.1.3-2.7-1.7-6.8-2.2-10-1.2-.4.1-.9-.1-1-.6-.1-.4.1-.9.6-1 3.6-1.1 8.1-.5 11.2 1.4.4.2.5.7.3 1.1zm.1-2.7c-3.2-1.9-8.5-2.1-11.5-1.1-.5.2-1.1-.1-1.3-.6-.2-.5.1-1.1.6-1.3 3.5-1.1 9.3-.9 13 1.3.5.3.6.9.4 1.4-.3.4-1 .6-1.4.3z" fill="#000"/>
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="#1db954">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.5 17.32a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.04 8.5-.59 11.66 1.34.36.22.47.69.25 1.03zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.98-8.15-2.56-11.97-1.4a.94.94 0 1 1-.55-1.8c4.37-1.33 9.8-.68 13.5 1.6.45.27.6.85.31 1.29zm.13-3.4c-3.87-2.3-10.27-2.51-13.97-1.39a1.13 1.13 0 1 1-.66-2.16c4.25-1.29 11.31-1.04 15.77 1.6a1.13 1.13 0 0 1-1.14 1.95z"/>
         </svg>
         <span>Spotifree</span>
       </div>
 
-      <nav class="sidebar__nav">
-        <button class="nav-btn active" data-view="home">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3l9-8z"/></svg>
+      <nav class="nav">
+        <a href="#" class="nav-item active" data-view="home">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 0 1 3 0l7.5 4.33a2 2 0 0 1 1 1.732V21a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1v-6h-3v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.577a2 2 0 0 1 1-1.732l7.5-4.33z"/></svg>
           <span>Главная</span>
-        </button>
-        <button class="nav-btn" data-view="search">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm10 16l-5.5-5.5"/></svg>
+        </a>
+        <a href="#" class="nav-item" data-view="search">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8543 16.3651C19.1419 14.7484 19.9118 12.692 19.9118 10.4579C19.9118 5.41887 15.6856 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.4544 3.27893 10.533 3.27893C14.6115 3.27893 17.9118 6.55226 17.9118 10.5579C17.9118 14.5636 14.6115 17.8369 10.533 17.8369C6.4544 17.8369 3.12598 14.5636 3.12598 10.5579Z"/></svg>
           <span>Поиск</span>
-        </button>
-        <button class="nav-btn" data-view="library">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v18H3zM10 3h4v18h-4zM17 3h4v18h-4z"/></svg>
-          <span>Медиатека</span>
-        </button>
+        </a>
+        <a href="#" class="nav-item" data-view="library">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 2 0V4.732l4 2.309V21a1 1 0 1 0 2 0V6.464a1 1 0 0 0-.5-.866l-6-3.464zM9 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z"/></svg>
+          <span>Моя медиатека</span>
+        </a>
       </nav>
 
-      <div class="sidebar__divider"></div>
-
-      <div class="sidebar__playlists">
-        <button class="sidebar__create" id="openUploadBtn">
-          <span class="plus-icon">+</span>
-          <span>Загрузить трек</span>
+      <div class="sidebar-section">
+        <button id="open-upload" class="upload-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z"/></svg>
+          Загрузить трек
         </button>
-        <button class="sidebar__create sidebar__create--alt" data-view="liked">
-          <span class="heart-icon">♥</span>
-          <span>Любимые треки</span>
-        </button>
+      </div>
 
-        <div class="sidebar__playlist-list" id="sidebarTrackList"></div>
+      <div class="playlists">
+        <h3>Плейлисты</h3>
+        <ul id="playlist-list">
+          <li class="playlist-item active" data-filter="all">Все треки</li>
+          <li class="playlist-item" data-filter="recent">Недавно добавленные</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="footer-link">Установить приложение</a>
       </div>
     </aside>
 
+    <!-- MAIN -->
     <main class="main">
       <header class="topbar">
-        <div class="topbar__nav">
-          <button class="topbar__round" title="Назад">‹</button>
-          <button class="topbar__round" title="Вперёд">›</button>
+        <div class="nav-buttons">
+          <button class="circle-btn" id="nav-back">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.957 2.793a1 1 0 0 1 0 1.414L8.164 12l7.793 7.793a1 1 0 1 1-1.414 1.414L5.336 12l9.207-9.207a1 1 0 0 1 1.414 0z"/></svg>
+          </button>
+          <button class="circle-btn" id="nav-fwd">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8.043 2.793a1 1 0 0 0 0 1.414L15.836 12l-7.793 7.793a1 1 0 1 0 1.414 1.414L18.664 12 9.457 2.793a1 1 0 0 0-1.414 0z"/></svg>
+          </button>
         </div>
-        <div class="topbar__search">
-          <input type="text" id="searchInput" placeholder="Что хочешь послушать?" />
-        </div>
-        <div class="topbar__user">
-          <button class="topbar__round topbar__bell" title="Уведомления">🔔</button>
-          <div class="topbar__avatar" id="userAvatar">
-            <span>K</span>
-          </div>
+        <div class="profile">
+          <div class="profile-avatar">K</div>
         </div>
       </header>
 
-      <section class="hero" id="hero">
-        <div class="hero__banner">
-          <div class="hero__gradient"></div>
-          <div class="hero__content">
-            <span class="hero__eyebrow">Spotifree</span>
-            <h1 class="hero__title">Добрый вечер</h1>
-            <p class="hero__subtitle">Слушай свою музыку, делись треками, поддерживай GIF-обложки.</p>
+      <div class="content">
+        <section class="hero">
+          <div class="hero-banner">
+            <div class="hero-overlay"></div>
+            <div class="hero-text">
+              <p class="hero-eyebrow">КОЛЛЕКЦИЯ</p>
+              <h1 id="hero-title">Добрый вечер</h1>
+              <p class="hero-sub">Загружай свою музыку, слушай и делись с друзьями</p>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div class="hero__quick" id="quickTracks"></div>
-      </section>
-
-      <section class="section">
-        <div class="section__head">
-          <h2>Твоя библиотека</h2>
-          <a class="section__link" id="refreshLibrary" href="#">Обновить</a>
-        </div>
-        <div class="cards" id="trackCards"></div>
-        <div class="empty" id="emptyState">
-          <p>Здесь пока пусто. Загрузи свой первый трек, чтобы начать.</p>
-          <button class="btn btn--primary" id="emptyUploadBtn">Загрузить трек</button>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section__head">
-          <h2>Опубликовать музыку</h2>
-        </div>
-        <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
-          <div class="upload-form__cover">
-            <label for="coverInput" class="upload-form__cover-label">
-              <img id="coverPreview" alt="Обложка" />
-              <span class="upload-form__cover-placeholder" id="coverPlaceholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M4 15l4-4 4 4 4-4 4 4"/><circle cx="9" cy="9" r="1.5"/></svg>
-                <span>Загрузить обложку<br/>JPG, PNG, GIF</span>
-              </span>
-            </label>
-            <input type="file" id="coverInput" name="cover" accept="image/jpeg,image/png,image/gif,image/webp" hidden />
+        <section class="section">
+          <div class="section-head">
+            <h2>Твоя коллекция</h2>
+            <a href="#" class="see-all">Показать все</a>
           </div>
-          <div class="upload-form__fields">
-            <div class="field">
-              <label for="titleInput">Название трека</label>
-              <input type="text" id="titleInput" name="title" placeholder="Например, Звёзды" required maxlength="200" />
-            </div>
-            <div class="field">
-              <label for="artistInput">Автор / исполнитель</label>
-              <input type="text" id="artistInput" name="artist" placeholder="Например, kknoriakidev" maxlength="200" />
-            </div>
-            <div class="field">
-              <label for="albumInput">Альбом (необязательно)</label>
-              <input type="text" id="albumInput" name="album" placeholder="Single" maxlength="200" />
-            </div>
-            <div class="field">
-              <label for="audioInput">Аудиофайл (.mp3, .wav, .ogg, .m4a, .flac)</label>
-              <input type="file" id="audioInput" name="audio" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac" required />
-              <small id="audioFileName" class="field__hint">Файл не выбран</small>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn--primary" id="submitUploadBtn">Опубликовать</button>
-              <button type="reset" class="btn btn--ghost" id="resetUploadBtn">Сбросить</button>
-            </div>
-            <div class="upload-status" id="uploadStatus" aria-live="polite"></div>
+          <div id="tracks-grid" class="tracks-grid"></div>
+          <div id="empty-state" class="empty-state" hidden>
+            <h3>Пока тут пусто</h3>
+            <p>Нажми «Загрузить трек», чтобы добавить свою первую песню.</p>
           </div>
-        </form>
-      </section>
+        </section>
 
-      <div class="footer-space"></div>
+        <section class="section">
+          <div class="section-head">
+            <h2>Все треки</h2>
+          </div>
+          <ol id="track-list" class="track-list"></ol>
+        </section>
+      </div>
     </main>
   </div>
 
-  <footer class="player" id="player">
-    <div class="player__now">
-      <div class="player__cover" id="playerCover">
-        <span class="player__cover-fallback">♪</span>
+  <!-- PLAYER -->
+  <footer class="player">
+    <div class="player-left">
+      <img id="player-cover" class="player-cover" src="" alt="" hidden />
+      <div class="player-meta">
+        <div id="player-title" class="player-title">Ничего не играет</div>
+        <div id="player-author" class="player-author"></div>
       </div>
-      <div class="player__meta">
-        <div class="player__title" id="playerTitle">Ничего не играет</div>
-        <div class="player__artist" id="playerArtist">Выбери трек из библиотеки</div>
-      </div>
-      <button class="player__like" id="playerLike" title="В любимые">♡</button>
-    </div>
-
-    <div class="player__center">
-      <div class="player__controls">
-        <button class="player__btn" id="shuffleBtn" title="Перемешать">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
-        </button>
-        <button class="player__btn" id="prevBtn" title="Назад">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5L9 12l11 7z"/></svg>
-        </button>
-        <button class="player__btn player__btn--play" id="playPauseBtn" title="Воспроизвести">
-          <svg id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
-        </button>
-        <button class="player__btn" id="nextBtn" title="Вперёд">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"/></svg>
-        </button>
-        <button class="player__btn" id="repeatBtn" title="Повтор">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-        </button>
-      </div>
-      <div class="player__progress">
-        <span class="player__time" id="currentTime">0:00</span>
-        <input type="range" id="seekBar" min="0" max="1000" value="0" step="1" />
-        <span class="player__time" id="durationTime">0:00</span>
-      </div>
-    </div>
-
-    <div class="player__right">
-      <button class="player__btn" id="muteBtn" title="Звук">
-        <svg id="volIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16 8a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <button id="btn-like" class="icon-btn" title="Нравится">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.724 4.22A4.313 4.313 0 0 0 12 6.142a4.313 4.313 0 0 0-7.715 2.706c0 4.157 4.07 6.974 7.715 9.952 3.645-2.978 7.715-5.795 7.715-9.952A4.313 4.313 0 0 0 15.724 4.22z"/></svg>
       </button>
-      <input type="range" id="volumeBar" min="0" max="100" value="80" step="1" />
     </div>
 
-    <audio id="audioEl" preload="metadata"></audio>
+    <div class="player-center">
+      <div class="player-controls">
+        <button id="btn-shuffle" class="icon-btn" title="Перемешать">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.391a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356a2.25 2.25 0 0 1 1.724-.804h1.947l-1.017 1.018a.75.75 0 0 0 1.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 0 0 .39 3.5z"/></svg>
+        </button>
+        <button id="btn-prev" class="icon-btn" title="Предыдущий">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"/></svg>
+        </button>
+        <button id="btn-play" class="play-btn" title="Воспроизвести">
+          <svg id="icon-play" viewBox="0 0 24 24" width="20" height="20" fill="#000"><path d="M7.05 3.606l13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"/></svg>
+          <svg id="icon-pause" viewBox="0 0 24 24" width="20" height="20" fill="#000" hidden><path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"/></svg>
+        </button>
+        <button id="btn-next" class="icon-btn" title="Следующий">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"/></svg>
+        </button>
+        <button id="btn-repeat" class="icon-btn" title="Повтор">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M0 4.75A3.75 3.75 0 0 1 3.75 1h8.5A3.75 3.75 0 0 1 16 4.75v5a3.75 3.75 0 0 1-3.75 3.75H9.81l1.018 1.018a.75.75 0 1 1-1.06 1.06L6.939 12.75l2.829-2.828a.75.75 0 1 1 1.06 1.06L9.811 12h2.439a2.25 2.25 0 0 0 2.25-2.25v-5a2.25 2.25 0 0 0-2.25-2.25h-8.5A2.25 2.25 0 0 0 1.5 4.75v5A2.25 2.25 0 0 0 3.75 12H5v1.5H3.75A3.75 3.75 0 0 1 0 9.75v-5z"/></svg>
+        </button>
+      </div>
+      <div class="progress-row">
+        <span id="time-current" class="time">0:00</span>
+        <input id="seek" type="range" min="0" max="100" value="0" step="0.1" />
+        <span id="time-total" class="time">0:00</span>
+      </div>
+    </div>
+
+    <div class="player-right">
+      <button id="btn-mute" class="icon-btn" title="Звук">
+        <svg id="icon-vol" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.741.85a.75.75 0 0 1 .375.65v13a.75.75 0 0 1-1.125.65l-6.925-4a3.642 3.642 0 0 1-1.33-4.967 3.639 3.639 0 0 1 1.33-1.332l6.925-4a.75.75 0 0 1 .75 0zm-6.924 5.3a2.139 2.139 0 0 0 0 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 0 1 0 4.88z"/></svg>
+      </button>
+      <input id="volume" type="range" min="0" max="100" value="70" />
+    </div>
   </footer>
 
-  <div class="modal" id="uploadModal" aria-hidden="true">
-    <div class="modal__backdrop" data-close></div>
-    <div class="modal__card">
-      <div class="modal__head">
-        <h3>Загрузить трек</h3>
-        <button class="modal__close" data-close>×</button>
-      </div>
-      <div class="modal__body">
-        <p>Прокрути страницу к форме «Опубликовать музыку» — выбери аудио и GIF-обложку, заполни поля и нажми «Опубликовать».</p>
-        <button class="btn btn--primary" id="modalGoForm">К форме загрузки</button>
-      </div>
+  <!-- UPLOAD MODAL -->
+  <div id="upload-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-content">
+      <header class="modal-head">
+        <h2>Загрузить трек</h2>
+        <button class="icon-btn" data-close-modal>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M2.47 2.47a.75.75 0 0 1 1.06 0L12 10.94l8.47-8.47a.75.75 0 1 1 1.06 1.06L13.06 12l8.47 8.47a.75.75 0 1 1-1.06 1.06L12 13.06l-8.47 8.47a.75.75 0 0 1-1.06-1.06L10.94 12 2.47 3.53a.75.75 0 0 1 0-1.06z"/></svg>
+        </button>
+      </header>
+      <form id="upload-form" class="upload-form">
+        <label class="form-row">
+          <span>Название</span>
+          <input type="text" name="title" placeholder="Название трека" required />
+        </label>
+        <label class="form-row">
+          <span>Автор</span>
+          <input type="text" name="author" placeholder="Имя исполнителя" required />
+        </label>
+        <label class="form-row">
+          <span>Альбом (опционально)</span>
+          <input type="text" name="album" placeholder="Single" />
+        </label>
+        <label class="form-row">
+          <span>Аудио файл (.mp3, .wav, .ogg)</span>
+          <input type="file" name="track" accept="audio/*,.mp3,.wav,.ogg,.m4a" required />
+        </label>
+        <label class="form-row">
+          <span>Обложка / GIF (опционально)</span>
+          <input type="file" name="cover" accept="image/*,.gif" />
+        </label>
+        <div id="upload-error" class="form-error" hidden></div>
+        <button type="submit" class="submit-btn">
+          <span class="btn-label">Опубликовать</span>
+          <span class="btn-spinner" hidden></span>
+        </button>
+      </form>
     </div>
   </div>
 
-  <script src="/js/app.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
